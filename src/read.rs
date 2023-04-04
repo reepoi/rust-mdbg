@@ -14,7 +14,7 @@ pub struct Read {
     pub minimizers : Vec<String>,
     pub minimizers_pos: Vec<usize>,
     pub transformed: Vec<u64>,
-    pub seq: String, 
+    pub seq: String,
     //pub seq_str: &'a str, // an attempt to avoid copying the string sequence returned by the fasta parser (seems too much effort to implement for now)
     pub corrected: bool
 }
@@ -26,34 +26,34 @@ pub struct Lmer {
 
 
 const SEQ_NT4_TABLE: [u8; 256] =
-   [0, 1, 2, 3,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 0, 4, 1,  4, 4, 4, 2,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  3, 3, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 0, 4, 1,  4, 4, 4, 2,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  3, 3, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
-        4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4];
+[0, 1, 2, 3,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 0, 4, 1,  4, 4, 4, 2,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  3, 3, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 0, 4, 1,  4, 4, 4, 2,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  3, 3, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,
+4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4];
 
 // copy from http://www.cse.yorku.ca/~oz/hash.html:
 
 pub fn hash(mut key: u64, mask: u64) -> u64 {
-        key = (!key + (key << 21)) & mask;
-        key = key ^ key >> 24;
-        key = ((key + (key << 3)) + (key << 8)) & mask;
-        key = key ^ key >> 14;
-        key = ((key + (key << 2)) + (key << 4)) & mask;
-        key = key ^ key >> 28;
-        key = (key + (key << 31)) & mask;
-        return key;
+    key = (!key + (key << 21)) & mask;
+    key = key ^ key >> 24;
+    key = ((key + (key << 3)) + (key << 8)) & mask;
+    key = key ^ key >> 14;
+    key = ((key + (key << 2)) + (key << 4)) & mask;
+    key = key ^ key >> 28;
+    key = (key + (key << 31)) & mask;
+    return key;
 }
 
 
@@ -91,7 +91,7 @@ impl Read {
         if params.uhs {Read::extract_uhs(inp_id, inp_seq, params, minimizer_to_int, uhs_bloom)}
         else if params.lcp {Read::extract_lcp(inp_id, inp_seq, params, minimizer_to_int, lcp_bloom)}
         else if params.use_syncmers { Read::extract_syncmers(inp_id, inp_seq, params) }
-	else {Read::extract_density(inp_id, inp_seq, params, minimizer_to_int)}
+        else {Read::extract_density(inp_id, inp_seq, params, minimizer_to_int)}
     }
 
     //delete
@@ -177,7 +177,7 @@ impl Read {
         pos_vec.push(prev_i);
         (hpc_seq, pos_vec)
     }
-    
+
     pub fn extract_density(inp_id: &str, inp_seq_raw: String, params: &Params, minimizer_to_int: &HashMap<String, u64>) -> Self {
         let density = params.density;
         let l = params.l;
@@ -238,15 +238,15 @@ impl Read {
             return Read {id: inp_id.to_string(), minimizers: read_minimizers, minimizers_pos: read_minimizers_pos, transformed: read_transformed, seq: inp_seq_raw, corrected: false};
         }
 
-	let s = params.s;
-	//let wmin = params.wmin;
-	//let wmax = params.wmax;
-	// using hifimap defaults
-	//let wmin = l/(l-s+1)+2; // actually unused here
-	//let wmax = l/(l-s+1)+10;
-	let smask : u64 = ((1 as u64) << 2*s) - 1;
-	let lmask : u64 = ((1 as u64) << 2*l) - 1;
-	let t = f64::ceil((l - s + 1) as f64 / 2.0) as usize;
+        let s = params.s;
+        //let wmin = params.wmin;
+        //let wmax = params.wmax;
+        // using hifimap defaults
+        //let wmin = l/(l-s+1)+2; // actually unused here
+        //let wmax = l/(l-s+1)+10;
+        let smask : u64 = ((1 as u64) << 2*s) - 1;
+        let lmask : u64 = ((1 as u64) << 2*l) - 1;
+        let t = f64::ceil((l - s + 1) as f64 / 2.0) as usize;
         let mut seq_hashes = Vec::new();
         let mut pos_to_seq_coord = Vec::new();
         let mut qs = VecDeque::<u64>::new();
@@ -307,7 +307,7 @@ impl Read {
                         else {
                             //let mut new_minimizer = false; // is never used
                             let tuple = update_window(&mut qs, &mut qs_pos, qs_min_val, qs_min_pos, hash_s, i - s + 1, /*new_minimizer*/ false);
-                            qs_min_val = tuple.0; qs_min_pos = tuple.1; 
+                            qs_min_val = tuple.0; qs_min_pos = tuple.1;
                             // new_minimizer = tuple.2;// is never used
                             if qs_min_pos == qs_pos[t-1] as i32 {
                                 let yl : u64 = match xl[0] < xl[1] {
@@ -338,7 +338,7 @@ impl Read {
 
                             if !params.use_hpc {pos_to_seq_coord.push(tup.1[i-l+1]);} //if not HPCd need raw sequence positions
                             else {pos_to_seq_coord.push(i-l+1);} //already HPCd so positions are the same
-                            //pos_to_seq_coord.push(i - l + 1);
+                                                                 //pos_to_seq_coord.push(i - l + 1);
                         }
                     }
                 }
@@ -353,7 +353,7 @@ impl Read {
         }
         let read_minimizers = Vec::<String>::new(); // unused everywhere it seems
         Read {id: inp_id.to_string(), minimizers: read_minimizers, minimizers_pos: pos_to_seq_coord, transformed: seq_hashes, seq: inp_seq_raw, corrected: false}
-    } 
+    }
 
     pub fn label(&self, read_seq: String, read_minimizers: Vec<String>, read_minimizers_pos: Vec<usize>, read_transformed: Vec<u64>, corrected_map: &mut CorrMap) {
         corrected_map.insert(self.id.to_string(), (read_seq, read_minimizers, read_minimizers_pos, read_transformed));
@@ -366,27 +366,27 @@ impl Read {
         for i in 0..(self.transformed.len()- k + 1) {
             let mut node : Kmer = Kmer::make_from(&self.transformed[i..i+k]);
             let mut seq_reversed = false;
-            if REVCOMP_AWARE { 
-                let (node_norm, reversed) = node.normalize(); 
+            if REVCOMP_AWARE {
+                let (node_norm, reversed) = node.normalize();
                 node = node_norm;
                 seq_reversed = reversed;
-            } 
+            }
             let seq = self.seq[self.minimizers_pos[i] as usize..(self.minimizers_pos[i+k-1] as usize + l)].to_string();
             //if seq_reversed {
             //    seq = utils::revcomp(&seq);
             //}
 
-            /* // TODO incorporate that code somehow into writing an adequate sequence 
-              // not just the first sequence that appears for a kmer (at abundance 2)
-              // but rather the seq that has closest length to median length for that kmer
+            /* // TODO incorporate that code somehow into writing an adequate sequence
+               // not just the first sequence that appears for a kmer (at abundance 2)
+               // but rather the seq that has closest length to median length for that kmer
                let mut inserted = false;
-               if kmer_seqs.contains_key(&node) { 
+               if kmer_seqs.contains_key(&node) {
                let median_seq_len : usize = median(kmer_seqs_lens.get(&node).unwrap()) as usize;
             //println!("node: {} seqlen: {}",node.print_as_string(),seq.len());
             // insert that sequence if it's closer to the median length than the current
             // inserted string
             if ((seq.len() - median_seq_len) as f64).abs() < ((kmer_seqs.get(&node).unwrap().len() - median_seq_len) as f64).abs()
-            { 
+            {
             kmer_seqs.insert(node.clone(), seq.clone());
             inserted = true;
             }
@@ -400,7 +400,7 @@ impl Read {
             */
 
             let origin = "*".to_string(); // uncomment the line below to track where the kmer is coming from (but not needed in production)
-            //let origin = format!("{}_{}_{}", self.id, self.minimizers_pos[i].to_string(), self.minimizers_pos[i+k-1].to_string()); 
+                                          //let origin = format!("{}_{}_{}", self.id, self.minimizers_pos[i].to_string(), self.minimizers_pos[i+k-1].to_string());
 
             let position_of_second_minimizer = match seq_reversed {
                 true => self.minimizers_pos[i+k-1] - self.minimizers_pos[i+k-2],
@@ -417,15 +417,15 @@ impl Read {
     }
     pub fn poa_correct(&mut self, int_to_minimizer: &HashMap<u64, String>, poa_map: &mut HashMap<String, Vec<String>>, buckets: &Buckets, params : &Params, mut corrected_map: &mut CorrMap, reads_by_id: &HashMap<String, Read>) {
 
-	// poa alignment scoring parameters
-	let score = |a: u64, b: u64| if a == b {1i32} else {-1i32};
+        // poa alignment scoring parameters
+        let score = |a: u64, b: u64| if a == b {1i32} else {-1i32};
         let scoring = poa::Scoring::new(-1, -1, score);
         //let scoring = poa::Scoring::new(-1, 0, score); // the hope is that a 0 gap extend penalty somehow approximates semiglobal, but that's not quite true
         // other alignment parameters
         let dist_threshold = 0.15; // mash distance cut-off for read recruitment
-        //let top_x_aligned_reads = 0; // get the 10 best read alignments per template
+                                   //let top_x_aligned_reads = 0; // get the 10 best read alignments per template
         let poa_global_min_score = std::i32::MIN; // discard all alignments below that score (discarded when top_X_aligned_read > 0)
-        //let mut poa_global_min_score = -10; 
+                                                  //let mut poa_global_min_score = -10;
         let debug = params.debug;
         let n = params.n;
         let l = params.l;
@@ -438,7 +438,7 @@ impl Read {
         let mut poa_ids = Vec::<String>::new();
         let mut aligner = poa::Aligner::new(scoring, &read_transformed, Some(seq_str), Some(read_minimizers_pos));
         // populate bucket_reads with reads that share n consecutive minimizers with template
-        added_reads.insert(self.id.clone());  
+        added_reads.insert(self.id.clone());
         for i in 0..read_transformed.len()-n+1 {
             let bucket_idx = &utils::normalize_vec(&read_transformed[i..i+n].to_vec());
             let entry = &buckets[bucket_idx];
@@ -446,9 +446,9 @@ impl Read {
                 let query = &reads_by_id[id];
                 if !added_reads.contains(&query.id) {
                     bucket_reads.push(query);
-                    added_reads.insert(query.id.clone());  
+                    added_reads.insert(query.id.clone());
                 }
-            }   
+            }
         }
         // filter bucket_reads so that it only contains reads below a mash distance of template
         let mut bucket_reads : Vec<(&Read, f64)> = bucket_reads.iter().map(|seq| (*seq, minimizers::dist(self, seq, &params))).filter(|(_seq, dist)| *dist < dist_threshold).collect();
@@ -462,26 +462,26 @@ impl Read {
         // do a first pass aligning reads to the template to get only the top X best scoring reads
         // TODO this code isn't up to date as it only aligns in forward direction
         /*
-        let mut alignment_scores = Vec::new();
-        if top_X_aligned_reads > 0 
-        {
-            for i in 0..bucket_reads.len() {
-                aligner.global(&bucket_reads[i].0.transformed);
-                let score = aligner.alignment().score;
-                alignment_scores.push((score,i));
-            }
-            // sort alignment scores decreasing
-            alignment_scores.sort_by(|a, b| b.cmp(a));
-            //if debug { println!("read alignment scores: {:?}",alignment_scores); }
+           let mut alignment_scores = Vec::new();
+           if top_X_aligned_reads > 0
+           {
+           for i in 0..bucket_reads.len() {
+           aligner.global(&bucket_reads[i].0.transformed);
+           let score = aligner.alignment().score;
+           alignment_scores.push((score,i));
+           }
+        // sort alignment scores decreasing
+        alignment_scores.sort_by(|a, b| b.cmp(a));
+        //if debug { println!("read alignment scores: {:?}",alignment_scores); }
 
-            // threshold becomes the X-th highest alignment
-            if alignment_scores.len() > top_X_aligned_reads
-            {
-                poa_global_min_score = alignment_scores[top_X_aligned_reads].0;
-            }
-            else{
-                poa_global_min_score = std::i32::MIN;
-            }
+        // threshold becomes the X-th highest alignment
+        if alignment_scores.len() > top_X_aligned_reads
+        {
+        poa_global_min_score = alignment_scores[top_X_aligned_reads].0;
+        }
+        else{
+        poa_global_min_score = std::i32::MIN;
+        }
         }
         */
         let mut nb_aln_forward = 0;
@@ -509,17 +509,17 @@ impl Read {
             if debug { println!("--- Backward alignment score: {} (ID: {})\nMinimizer-space: {}\n{}\n---", aligner.alignment().score, read.id.to_string(), pretty_minvec(&rev_read), aligner.print_aln());}
             let bwd_score = aligner.alignment().score;
             //let mut aln_ori = "";
-            if std::cmp::max(fwd_score, bwd_score) >= poa_global_min_score { 
-               if fwd_score > bwd_score { 
+            if std::cmp::max(fwd_score, bwd_score) >= poa_global_min_score {
+                if fwd_score > bwd_score {
                     aligner.semiglobal(&read.transformed, Some(seq), Some(pos));
                     //aln_ori = "fwd";
                     nb_aln_forward += 1;
-                } else { 
+                } else {
                     aligner.semiglobal(&rev_read, Some(&rev_seq), Some(&rev_minim_pos));
                     //aln_ori = "bwd";
                     nb_aln_backward += 1;
                 }
-                aligner.add_to_graph(); 
+                aligner.add_to_graph();
             }
             //if debug { aligner.traceback.print(aligner.graph(), bucket_reads[i].0.transformed.clone()); } // prints a confusing traceback (and crashes)
         }

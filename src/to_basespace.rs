@@ -41,12 +41,12 @@ struct Opt {
 /// Try to get memory usage (resident set size) in bytes using the `getrusage()` function from libc.
 // from https://github.com/digama0/mm0/blob/bebd670c5a77a1400913ebddec2c6248e76f90fe/mm0-rs/src/util.rs
 fn get_memory_rusage() -> usize {
-  let usage = unsafe {
-    let mut usage = MaybeUninit::uninit();
-    assert_eq!(libc::getrusage(libc::RUSAGE_SELF, usage.as_mut_ptr()), 0);
-    usage.assume_init()
-  };
-  usage.ru_maxrss as usize * 1024
+    let usage = unsafe {
+        let mut usage = MaybeUninit::uninit();
+        assert_eq!(libc::getrusage(libc::RUSAGE_SELF, usage.as_mut_ptr()), 0);
+        usage.assume_init()
+    };
+    usage.ru_maxrss as usize * 1024
 }
 
 
@@ -67,11 +67,11 @@ where P: AsRef<Path>, {
 
 fn main() {
     let start = Instant::now();
-    let opt = Opt::from_args();      
+    let opt = Opt::from_args();
     let mut gfa_file;
     let mut sequences_file;
-    if !opt.gfa.is_none()       {gfa_file       = opt.gfa.unwrap();} 	   else {panic!("please specify an input unitig GFA file (output of `gfatools asm [..] -u`).");} 
-    if !opt.sequences.is_none() {sequences_file = opt.sequences.unwrap();} else {panic!("Please specify the prefix of rust-mdbg, i.e. with [prefix].*.sequences files and the original GFA [prefix].gfa");} 
+    if !opt.gfa.is_none()       {gfa_file       = opt.gfa.unwrap();} 	   else {panic!("please specify an input unitig GFA file (output of `gfatools asm [..] -u`).");}
+    if !opt.sequences.is_none() {sequences_file = opt.sequences.unwrap();} else {panic!("Please specify the prefix of rust-mdbg, i.e. with [prefix].*.sequences files and the original GFA [prefix].gfa");}
 
     let debug = opt.debug;
     //let mut pb = ProgressBar::on(stderr(),file_size);
@@ -110,15 +110,15 @@ fn main() {
         }
         return true;
     };
-    
+
     if let Ok(lines) = read_lines(&gfa_file) {
-	// Consumes the iterator, returns an (Optional) String
+        // Consumes the iterator, returns an (Optional) String
         let mut current_unitig : (String, Vec<(u64, bool)>) = ("".to_string(), Vec::new());
-	    for line in lines {
-	        if let Ok(line_contents) = line {
-		        if !process_gfa_line(&line_contents, &mut current_unitig) {break;}
-	        }
-	    }
+        for line in lines {
+            if let Ok(line_contents) = line {
+                if !process_gfa_line(&line_contents, &mut current_unitig) {break;}
+            }
+        }
         // insert last unitig
         if current_unitig.1.len() > 0 {
             unitigs.insert(current_unitig.0.clone(), current_unitig.1.to_vec());
@@ -152,7 +152,7 @@ fn main() {
         }
     }
     //println!("Marked {} mDBG nodes to load sequences", load_node.len());
-    
+
     // Step 1.75 : read the original uncompressed GFA file and record node abundances
     let mut unitig_abundance : HashMap<String, u64> = HashMap::new();
     let mut nb_kminmers = 0;
@@ -165,7 +165,7 @@ fn main() {
             let kminmer_id = v[1].clone().parse::<u64>().unwrap();
             let mut abundance = 0;
             for elt in v.iter()
-            {   
+            {
                 if elt.starts_with("KC:")
                 {
                     abundance = elt.split(':').collect::<Vec<&str>>()[2].parse::<u64>().unwrap();
@@ -180,15 +180,15 @@ fn main() {
         }
         return true;
     };
- 
+
     if let Ok(lines) = read_lines(&format!("{}.gfa", &sequences_file.to_str().unwrap())) {
-	// Consumes the iterator, returns an (Optional) String
+        // Consumes the iterator, returns an (Optional) String
         let mut current_unitig : (String, Vec<(u64, bool)>) = ("".to_string(), Vec::new());
-	    for line in lines {
-	        if let Ok(line_contents) = line {
-		        if !process_orig_gfa_line(&line_contents) {break;}
-	        }
-	    }
+        for line in lines {
+            if let Ok(line_contents) = line {
+                if !process_orig_gfa_line(&line_contents) {break;}
+            }
+        }
     }
     println!("Done parsing original GFA, with {} k-min-mers.", nb_kminmers);
 
@@ -206,7 +206,7 @@ fn main() {
         let node_id = v[0].parse::<u64>().unwrap();
         let unitig_name = node2unitig.get(&node_id);
         if !unitig_name.is_some() {return;}  // that node isn't used in a unitig.. weird.
-        //println!("unitig {} seq {} minim {:?}",unitig_name.unwrap(),v[0],v[5][1..v[5].len()-1].split(',').collect::<Vec<&str>>());
+                                             //println!("unitig {} seq {} minim {:?}",unitig_name.unwrap(),v[0],v[5][1..v[5].len()-1].split(',').collect::<Vec<&str>>());
         let minim_pos = v[5][1..v[5].len()-1].split(',').map(|s| s.trim().parse::<u32>().unwrap()).collect::<Vec<u32>>();
         let seq = v[2];
         let seq_len = seq.len() as u32;
@@ -229,7 +229,7 @@ fn main() {
         }
         shifts.insert(unitig_name.unwrap().clone(), cur_shift); // re-insert shifts in case they were modified
     };
-    
+
     for path in glob(&format!("{}.*.sequences", &sequences_file.to_str().unwrap())).expect("Failed to read glob pattern for .sequences files.")  {
         let path = path.unwrap();
         let path = path.to_str().unwrap(); // rust really requires me to split the let statement in two..
@@ -239,7 +239,7 @@ fn main() {
             }
         }
     }
-    
+
     println!("Done parsing .sequences file, recorded {} sequences.", sequences.len());
 
     // Step 3 : read again the GFA file and at the same time write the .complete.gfa file with proper sequence
@@ -281,9 +281,9 @@ fn main() {
             let seq = reconstruct_seq(&unitig_name);
             v[2]= seq.clone();
             //v[3] = String::from(format!("LN:i:{}",seq.len())); // field should already be there
-            v[3] = String::from(format!("LN:i:{}", seq.len())); // but actually we want to fix it given that overlaps 
-                                                               // were very approximately calculated. then gfatools complains
-                                                               // and might even crash
+            v[3] = String::from(format!("LN:i:{}", seq.len())); // but actually we want to fix it given that overlaps
+                                                                // were very approximately calculated. then gfatools complains
+                                                                // and might even crash
             v.resize(5,"".to_string()); // deletes the RC/lc fields but add mean k-min-mer count as field "mc" (lowercase because not standard)
             v[4] = String::from(format!("mc:f:{:.1}", get_mean_abundance(&unitig_name)));
             seq_lens.insert(unitig_name, seq.len());
@@ -332,10 +332,10 @@ fn main() {
     };
 
     if let Ok(lines) = read_lines(&gfa_file) {
-	// Consumes the iterator, returns an (Optional) String
-	    for line in lines {
-	        if let Ok(line_contents) = line {process_gfa_line2(&line_contents);}
-	    }
+        // Consumes the iterator, returns an (Optional) String
+        for line in lines {
+            if let Ok(line_contents) = line {process_gfa_line2(&line_contents);}
+        }
     }
     let duration = start.elapsed();
     println!("Total execution time: {:?}", duration);

@@ -41,8 +41,8 @@ dashmap = "3.11.10"
 thread-id = "3.3.0"
 
 [profile.dev]
-opt-level = 3
-
+opt-level = 0
+debug = true
 
 [[bin]]
 name = "to_basespace"
